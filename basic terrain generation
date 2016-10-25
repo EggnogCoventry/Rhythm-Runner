@@ -50,7 +50,11 @@ public class gameHandling : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ground = SetGroundSection();
+        if(runTime > groundChangeTimer)
+        {
+            ground = SetGroundSection();
+            runTime = 0;
+        }
         runTime = runTime + Time.deltaTime;
         if(grTime > 10.0) 
         {
@@ -74,11 +78,6 @@ public class gameHandling : MonoBehaviour
 
    GameObject SetGroundSection()
     {
-        runTime = runTime + Time.deltaTime;
-        Debug.Log(runTime);
-
-        if (runTime > groundChangeTimer)
-        {
             z++;
             if (z == 3)
             {
@@ -89,14 +88,6 @@ public class gameHandling : MonoBehaviour
             //groundChangeTimer = groundChangeTime1[z, 1, 1];
             ground = (GameObject)Resources.Load("Prefabs/" + currentGroundSecID, typeof(GameObject)) as GameObject;
             Debug.Log(ground);
-            runTime = 0;
-        }
-        else
-        {
-            ground = ground = (GameObject)Resources.Load("Prefabs/" + currentGroundSecID, typeof(GameObject)) as GameObject; ;
-        }
-
-
 
         return ground;
     }
