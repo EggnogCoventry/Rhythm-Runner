@@ -1,6 +1,17 @@
 using UnityEngine;
 using System.Collections;
 
+/**
+   This code generates ground sections infinitely:
+     - The initial value of y must be set to the length of the chunk in Unity units, the same should be done to the + value following x on line 39
+     - All ground (and ceiling) objects must be tagged "Ground" in order to avoid an error
+     - It may be neccesary to edit the right edge of the ground object to avoid rigidbody collisions between ground objects
+     - All ground objects must have a rigidbody applied
+
+        THIS CODE CURRENTLY WRITTEN FOR UNITY2D
+
+
+    **/
 public class gameHandling : MonoBehaviour
 {
     GameObject oct;
