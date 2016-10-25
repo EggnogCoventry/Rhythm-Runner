@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
+
 /**
    This code generates ground sections infinitely:
      - The initial value of y must be set to the length of the chunk in Unity units, the same should be done to the + value following x on line 39
      - All ground (and ceiling) objects must be tagged "Ground" in order to avoid an error
      - It may be neccesary to edit the right edge of the ground object to avoid rigidbody collisions between ground objects
      - All ground objects must have a rigidbody applied
+     - Note the time between batch spawns can effect how the change ground timer works
 
         THIS CODE CURRENTLY WRITTEN FOR UNITY2D
 
@@ -14,34 +16,45 @@ using System.Collections;
     **/
 public class gameHandling : MonoBehaviour
 {
-    GameObject oct;
     GameObject ground;  // GameObject that stores the ground prefab
     GameObject groundSec; // Stores the most recently spawned section of ground, neccessary to manipulate each section
-    float grTime = 6.1F;  // Timer that counts to when a new batch of ground sections should be spawned (every 6 seconds)
+    float grTime = 10.1F;  // Timer that counts to when a new batch of ground sections should be spawned (every 6 seconds)
+    float runTime = 0.0F; //Stores current session timer
     int x = 0;
     int i = 0;
-    float y = 24F;
-    public float moveSpeed = 3;
+    int z = 0;
+    int u = 0;
+    int currentGroundSecID;
+    public int groundChangeTimer;
+    float y = 0F;
+    public int groundTypeSwitchTime;
+    public int groundID1;
+    public int groundID2;
+    public int groundID3;
+    //public float moveSpeed = 3;
+    public int[,] groundChangeTime1 = new int[3,3];
 
     // Use this for initialization
     void Start()
     {
-        ground = GameObject.FindGameObjectWithTag("Ground");
-        oct = GameObject.FindGameObjectWithTag("NPC");
-        do
-        {
-            Instantiate(oct, new Vector3(x, Random.Range(-1, 3), 0), Quaternion.identity);
-            x = x + 2;
+        string test = "Prefabs/groundSections/" + currentGroundSecID;
+        Debug.Log(test);
 
-        } while (x < 8);
-
+        ground = (GameObject)Resources.Load("Prefabs/0", typeof(GameObject)) as GameObject;
+        Debug.Log(ground);
+        currentGroundSecID = z;
+        groundChangeTime1[0, 1] = groundID1;
+        groundChangeTime1[1, 1] = groundID2;
+        groundChangeTime1[2, 1] = groundID3;
     }
     // Update is called once per frame
     void Update()
     {
-        if(grTime > 6.0) 
+        ground = SetGroundSection();
+        runTime = runTime + Time.deltaTime;
+        if(grTime > 10.0) 
         {
-            while(i < 3)  // Spawns 3 sections
+            while(i < 2)  // Spawns 3 sections
             {
                 //The position that each section is spawned at depends on the last instances' spawn position.
                 if (groundSec != null) //When first run, groundSec will be null, if so this sets it to the default starting pos                      
@@ -56,8 +69,37 @@ public class gameHandling : MonoBehaviour
             i = 0;
         }
         grTime = grTime + Time.deltaTime; //increments timer 
-    
-
 
     }
+
+   GameObject SetGroundSection()
+    {
+        runTime = runTime + Time.deltaTime;
+        Debug.Log(runTime);
+
+        if (runTime > groundChangeTimer)
+        {
+            z++;
+            if (z == 3)
+            {
+                z = 0;
+            }
+
+            currentGroundSecID = groundChangeTime1[z, 1];
+            //groundChangeTimer = groundChangeTime1[z, 1, 1];
+            ground = (GameObject)Resources.Load("Prefabs/" + currentGroundSecID, typeof(GameObject)) as GameObject;
+            Debug.Log(ground);
+            runTime = 0;
+        }
+        else
+        {
+            ground = ground = (GameObject)Resources.Load("Prefabs/" + currentGroundSecID, typeof(GameObject)) as GameObject; ;
+        }
+
+
+
+        return ground;
+    }
+
+    
 }
