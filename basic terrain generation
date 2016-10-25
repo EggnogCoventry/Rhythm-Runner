@@ -18,7 +18,7 @@ public class gameHandling : MonoBehaviour
 {
     GameObject ground;  // GameObject that stores the ground prefab
     GameObject groundSec; // Stores the most recently spawned section of ground, neccessary to manipulate each section
-    float grTime = 6.1F;  // Timer that counts to when a new batch of ground sections should be spawned (every 6 seconds)
+    float grTime = 10.1F;  // Timer that counts to when a new batch of ground sections should be spawned (every 6 seconds)
     float runTime = 0.0F; //Stores current session timer
     int x = 0;
     int i = 0;
@@ -26,7 +26,7 @@ public class gameHandling : MonoBehaviour
     int u = 0;
     int currentGroundSecID;
     public int groundChangeTimer;
-    float y = 24F;
+    float y = 0F;
     public int groundTypeSwitchTime;
     public int groundID1;
     public int groundID2;
@@ -52,9 +52,9 @@ public class gameHandling : MonoBehaviour
     {
         ground = SetGroundSection();
         runTime = runTime + Time.deltaTime;
-        if(grTime > 6.0) 
+        if(grTime > 10.0) 
         {
-            while(i < 3)  // Spawns 3 sections
+            while(i < 2)  // Spawns 3 sections
             {
                 //The position that each section is spawned at depends on the last instances' spawn position.
                 if (groundSec != null) //When first run, groundSec will be null, if so this sets it to the default starting pos                      
