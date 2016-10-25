@@ -1,0 +1,52 @@
+using UnityEngine;
+using System.Collections;
+
+public class gameHandling : MonoBehaviour
+{
+    GameObject oct;
+    GameObject ground;  // GameObject that stores the ground prefab
+    GameObject groundSec; // Stores the most recently spawned section of ground, neccessary to manipulate each section
+    float grTime = 6.1F;  // Timer that counts to when a new batch of ground sections should be spawned (every 6 seconds)
+    int x = 0;
+    int i = 0;
+    float y = 24F;
+    public float moveSpeed = 3;
+
+    // Use this for initialization
+    void Start()
+    {
+        ground = GameObject.FindGameObjectWithTag("Ground");
+        oct = GameObject.FindGameObjectWithTag("NPC");
+        do
+        {
+            Instantiate(oct, new Vector3(x, Random.Range(-1, 3), 0), Quaternion.identity);
+            x = x + 2;
+
+        } while (x < 8);
+
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if(grTime > 6.0) 
+        {
+            while(i < 3)  // Spawns 3 sections
+            {
+                //The position that each section is spawned at depends on the last instances' spawn position.
+                if (groundSec != null) //When first run, groundSec will be null, if so this sets it to the default starting pos                      
+                {
+                    y = groundSec.transform.position.x+25;
+                }     
+                groundSec = (GameObject)Instantiate(ground, new Vector3(y, -3, 0), Quaternion.Euler(0,0,0));  //groundSec is an instance of ground gameobject 
+                groundSec.GetComponent<Rigidbody2D>().velocity = -3 * transform.localScale.x * groundSec.transform.right; //Applies velocity to each ground section
+                i++;
+            }
+            grTime = 0.0F; //Resets timer to 0
+            i = 0;
+        }
+        grTime = grTime + Time.deltaTime; //increments timer 
+    
+
+
+    }
+}
