@@ -4,13 +4,14 @@ using System.Collections;
 
 /**
    This code generates ground sections infinitely:
-     - The initial value of y must be set to 0.
-     - All ground (and ceiling) objects must be tagged "Ground" in order to avoid an error
+     - Any ground/ceiling assets must be given a numerical name eg: 6, and that must be unique.
+     - All ground (and ceiling) objects must be tagged "Ground" in order to avoid an error and they must be a prefab stored in the Prefab folder under a Resources folder
      - It may be neccesary to edit the right edge of the ground object to avoid rigidbody collisions between ground objects
      - All ground objects must have a rigidbody applied
      - Note the time between batch spawns can effect how the change ground timer works
+     - All of the above is a bit of a pain, but it makes it more efficent
 
-        THIS CODE CURRENTLY WRITTEN FOR UNITY2D
+        THIS CODE CURRENTLY WRITTEN FOR UNITY3D :)))
 
 
     **/
@@ -18,18 +19,17 @@ public class gameHandling : MonoBehaviour
 {
     GameObject ground;  // GameObject that stores the ground prefab
     GameObject groundSec; // Stores the most recently spawned section of ground, neccessary to manipulate each section
-    float grTime = 10.1F;  // Timer that counts to when a new batch of ground sections should be spawned (every 6 seconds)
-    float runTime = 0.0F; //Stores current session timer
+    float grTime = 10.1F;  // Timer that counts to when a new batch of ground sections should be spawned (every 10 seconds)
+    float runTime = 0.0F; //Stores a running time that resets each time the ground section changes
     int i = 0; //loop control variable
     int z = 0; //stores current a index for groundChangeTime array
     int currentGroundSecID; //Stores the current ground object ID 
+    float length; //Stores length of current ground section
     public int groundChangeTimer; //Time until ground object should change
-    float y = 0F; //Stores the coordinate for where new ground objects should be instantiated
-    //public int groundTypeSwitchTime;  
+    float y = 0F; //Stores the coordinate for where new ground objects should be instantiated  
     public int groundID1; //Stores a ground object ID to be used
     public int groundID2;
     public int groundID3;
-    //public float moveSpeed = 3;
     public int[,] groundChangeTime1 = new int[3,3]; //Stores the object ID for each change cycle, an array allows this to be expanded to a user defined number of different objectId's
 
     void Start()
@@ -38,10 +38,13 @@ public class gameHandling : MonoBehaviour
         Debug.Log(test);
 
         ground = (GameObject)Resources.Load("Prefabs/0", typeof(GameObject)) as GameObject; //set to default ground object
+        length = ground.GetComponent<Renderer>().bounds.size.x;
+        Debug.Log(ground);
         currentGroundSecID = z;
         groundChangeTime1[0, 1] = groundID1;
         groundChangeTime1[1, 1] = groundID2;
         groundChangeTime1[2, 1] = groundID3;
+
     }
     // Update is called once per frame
     void Update()
@@ -49,6 +52,7 @@ public class gameHandling : MonoBehaviour
         if(runTime > groundChangeTimer)
         {
             ground = SetGroundSection();
+            length = ground.GetComponent<Renderer>().bounds.size.x;
             runTime = 0;
         }
         runTime = runTime + Time.deltaTime;
@@ -59,10 +63,10 @@ public class gameHandling : MonoBehaviour
                 //The position that each section is spawned at depends on the last instances' spawn position.
                 if (groundSec != null) //When first run, groundSec will be null, if so this sets it to the default starting pos                      
                 {
-                    y = groundSec.transform.position.x+25;
+                    y = groundSec.transform.position.x+length;
                 }     
-                groundSec = (GameObject)Instantiate(ground, new Vector3(y, -3, 0), Quaternion.Euler(0,0,0));  //groundSec is an instance of ground gameobject 
-                groundSec.GetComponent<Rigidbody2D>().velocity = -3 * transform.localScale.x * groundSec.transform.right; //Applies velocity to each ground section
+                groundSec = (GameObject)Instantiate(ground, new Vector3(y, -8, 0), Quaternion.identity);  //groundSec is an instance of ground gameobject 
+                groundSec.GetComponent<Rigidbody>().velocity = -9 * transform.localScale.x * groundSec.transform.right; //Applies velocity to each ground section
                 i++;
             }
             grTime = 0.0F; //Resets timer to 0
@@ -81,10 +85,8 @@ public class gameHandling : MonoBehaviour
             }
 
             currentGroundSecID = groundChangeTime1[z, 1];
-            //groundChangeTimer = groundChangeTime1[z, 1, 1];
             ground = (GameObject)Resources.Load("Prefabs/" + currentGroundSecID, typeof(GameObject)) as GameObject;
-            Debug.Log(ground);
-
+            
         return ground;
     }
 
