@@ -8,9 +8,9 @@ public class Spawner : MonoBehaviour
     public Object Ground1;
     public Object Ground2;
     public float wavecountdown = 0;
-    public float firstarea = 40;
+    public float firstarea = 20;
     public Object floorsprite;
-    public float secondarea = 80;
+    public float secondarea = 40;
 
     // Use this for initialization
     void Start()
