@@ -1,0 +1,35 @@
+public class up : MonoBehaviour
+{
+    public float moveSpeed = 5;
+    private ParticleSystem ps;
+    private int moveDirecOb;
+
+    // Use this for initialization
+    void Start()
+    {
+        ps = GetComponent<ParticleSystem>();
+        moveDirecOb = -1;
+        if (this.transform.rotation.z == -1) //Changes move direction based on rotation
+        {
+            moveDirecOb = 1;
+            Debug.Log("check2");
+        }
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        transform.Translate(new Vector3(moveDirecOb, 0, 0) * Time.deltaTime * moveSpeed); //moves obstacle
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        ps.Play();
+        Debug.Log("Hit");
+
+        Debug.Log("Hit");
+
+    }
+
+}
