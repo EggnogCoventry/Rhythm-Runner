@@ -18,6 +18,9 @@ public class gameHandling : MonoBehaviour
 {
     GameObject ground;  // GameObject that stores the ground prefab
     GameObject groundSec; // Stores the most recently spawned section of ground, neccessary to manipulate each section
+    GameObject[] groundCount; //Stores number of current spawned ground objects
+    GameObject obstacle;
+    int currentGroundObjects;
     float runTime = 0.0F; //Stores a running time that resets each time the ground section changes
     int i = 0; //loop control variable
     int z = 0; //stores current a index for groundChangeTime array
@@ -45,14 +48,23 @@ public class gameHandling : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        groundCount = GameObject.FindGameObjectsWithTag("Ground");
+        currentGroundObjects = groundCount.Length;
+        
         if(runTime > groundChangeTimer)
         {
             ground = SetGroundSection();
             length = ground.GetComponent<Renderer>().bounds.size.x;
             runTime = 0;
         }
+        //Limit for number of blocks spawned, also prevents a type of ground section missing it's turn to spawn due to the limit.
+        if (currentGroundObjects > 20) //Don't spawn new sections, and don't swap to a new ground type yet
+        {
+            runTime = 0;
+            grTime = 0;
+        }
         runTime = runTime + Time.deltaTime;
-        if(grTime > groundChangeTimer) 
+        if((grTime > groundChangeTimer) || currentGroundObjects < 6) 
         {
             while(i < 2)  // Spawns 3 sections
             {
@@ -61,8 +73,9 @@ public class gameHandling : MonoBehaviour
                 {
                     y = groundSec.transform.position.x+length;
                 }     
-                groundSec = (GameObject)Instantiate(ground, new Vector3(y-1, -12, 0), Quaternion.identity);  //groundSec is an instance of ground gameobject
-                Instantiate(ground, new Vector3(y - 1, +12, 0), Quaternion.Euler(180,0,0));
+                groundSec = (GameObject)Instantiate(ground, new Vector3(y-1, -8, 0), Quaternion.identity);  //groundSec is an instance of ground gameobject
+                Instantiate(ground, new Vector3(y -length- 1, +11, 0), Quaternion.Euler(180,180,0));
+                spawnObstacle();
                 i++;
             }
             grTime = 0.0F; //Resets timer to 0
@@ -72,9 +85,20 @@ public class gameHandling : MonoBehaviour
 
     }
 
-   GameObject SetGroundSection()
+    void spawnObstacle()
     {
-            z++;
+        obstacle = (GameObject)Resources.Load("Prefabs/10", typeof(GameObject)) as GameObject;
+        Instantiate(obstacle, new Vector3(y -  7, -7, 0), Quaternion.identity);
+        //Instantiate(obstacle, new Vector3(y - 8, +10, 0), Quaternion.Euler(180, 0, 0));
+        obstacle = (GameObject)Resources.Load("Prefabs/12", typeof(GameObject)) as GameObject;
+        Instantiate(obstacle, new Vector3(y - 25, -7, 0), Quaternion.identity);
+
+
+    }
+
+    GameObject SetGroundSection()
+    {
+            z++; 
             if (z == 3) //Loops back round to object 0
             {
                 z = 0;
