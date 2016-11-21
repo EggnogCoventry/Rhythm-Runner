@@ -14,7 +14,7 @@ public class UI : MonoBehaviour
     void Start()
     {
         hidedifficultymenu();
-
+        Time.timeScale = 0.0f;
     }
 
     // Update is called once per frame
@@ -22,7 +22,13 @@ public class UI : MonoBehaviour
     {
 
     }
-
+    
+    public void PlayButton()
+    {
+        Time.timescale = 1.0f;
+        DifficultyMenu.enabled = false;
+        MainMenu.enabled = false;
+    }
     public void showdifficultymenu()
     {
         DifficultyMenu.enabled = true;
