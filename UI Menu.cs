@@ -23,6 +23,12 @@ public class UI : MonoBehaviour
 
     }
     
+    public void PauseButton()
+    {
+        Time.timescale = 0.0f;
+        MainMenu.enabled = true;
+     }
+    
     public void PlayButton()
     {
         Time.timescale = 1.0f;
