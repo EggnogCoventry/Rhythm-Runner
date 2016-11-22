@@ -1,0 +1,117 @@
+using UnityEngine;
+using System.Collections;
+using System;
+using System.Collections.Generic;
+
+public class down : MonoBehaviour
+{
+    static GameObject menu;
+    static GameObject world;
+    public float moveSpeed = 5;
+    public Vector3 inputCalibrate;
+    public Vector3 input;
+    public Vector3 test;
+    public bool cutoff;
+    private int tag1;
+    public string moveStatus;
+    private Vector3 entryValue;
+    private float resetPosTimer;
+
+    // Use this for initialization
+    void Start ()
+    {
+        inputCalibrate = new Vector3(Input.acceleration.x * 4, Input.acceleration.y * 4, 0);
+        //tag1 = int.Parse(gameObject.GetComponent<GameObject>().tag);
+        input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0F);
+        input.y = Input.acceleration.y;
+        menu = GameObject.FindGameObjectWithTag("menu");
+        world = GameObject.FindGameObjectWithTag("Finish");
+        Debug.Log(menu + "oi");
+        resetPosTimer = 0.0F;
+        world.SetActive(false);
+        menu.SetActive(true);
+        cutoff = true;
+    }
+	
+	// Update is called once per frame
+	void Update ()
+    {
+        //input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0F);
+        //input.y = Input.acceleration.y;
+        Debug.Log(input.y);
+        Debug.Log(input.x);
+        Debug.Log(moveStatus);
+        if(resetPosTimer > 0.5F)
+        {
+            entryValue.y = Input.acceleration.y;
+            resetPosTimer = 0.0F;
+        }
+        resetPosTimer += Time.deltaTime;
+
+        
+        //transform.Translate(new Vector3(-1, 0, 0) * Time.deltaTime * moveSpeed);	
+    }
+    
+    void OnTriggerStay(Collider other)
+    {
+        //entryValue.y = Input.acceleration.y;
+
+        Debug.Log(3-(-2));
+        Debug.Log(entryValue.y);
+        Debug.Log(Input.acceleration.y);
+        Debug.Log(entryValue.y - Input.acceleration.y);
+
+        /** THE BUG TO END ALL BUGS:
+        - An obstacle tagged as up will only be destroyed if the user flicks up (occasionaly not true, but not really exploitable), this is correct behaviour 
+        - An obstacle tagged as down will be destroyed by both an upwards or downwards flick (should only be destroyed by a down flick, hence the tag)
+        - Somehow, when the user flicks UP in response to an obstacle that needs a down flick, the first if statement that checks for a down flick evaluates as true
+          and the second statement that checks for an up flick doesn't (even though it should), resulting in the obstacle being incorrectly destroyed.
+        - Yet when the user flicks up in response to an object to an obstacle that requires an UP flick, the second statement DOES this time evaluate as true, despite the fact that
+          the motion of the tablet (the only thing the if statement evaluates) meets exactly the same conditions as before when it didn't evaluate as true.
+        - So two inputs into the second if statements conditional, that are the same, is somehow producing 2 different results based on what obstacle is colliding.
+        - This is making me suicidal
+        **/
+            
+        test.y = Input.acceleration.y;
+        if (entryValue.y - test.y >= 0.20 && test.y < -0.50 && test.y < entryValue.y)
+        {
+          moveStatus = "down";
+          //Destroy(other.gameObject);
+        }
+
+        if (entryValue.y - test.y <= -0.25 && test.y > -0.50)
+        {
+            moveStatus = "up";
+            //Destroy(other.gameObject);
+        }
+        if (other.gameObject.name == "failnote")
+        {
+            Destroy (gameObject);
+        }
+
+        if (other.gameObject.tag != null)
+        {
+            // if (-Input.acceleration.x);
+            //Destroy(other.gameObject);
+
+
+            if(moveStatus == ("down") && other.gameObject.tag == ("down"))
+            {
+                cutoff = true;
+                moveStatus = null;
+                Destroy(other.gameObject);
+
+            }
+            if (moveStatus == ("up") && other.gameObject.tag == ("up"))
+            {
+                cutoff = true;
+                moveStatus = null;
+                Destroy(other.gameObject);
+                
+
+            }
+
+        }
+        moveStatus = null;
+    }
+}
