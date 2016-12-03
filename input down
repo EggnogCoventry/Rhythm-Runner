@@ -1,0 +1,41 @@
+\\ down input
+using UnityEngine;
+using System.Collections;
+
+public class down : MonoBehaviour
+{
+    public float moveSpeed = 5;
+  
+	// Use this for initialization
+	void Start ()
+    {
+       
+	}
+	
+	// Update is called once per frame
+	void Update ()
+    {
+        transform.Translate(new Vector3(-1, 0, 0) * Time.deltaTime * moveSpeed);	
+	}
+    
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "failnote")
+        {
+            Destroy (gameObject);
+        }
+
+        if (other.gameObject.name =="truenote1")
+        {
+               if (-Input.acceleration.x);
+              
+            // if (Input.GetKey(KeyCode.DownArrow))
+           
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+}
+
+// interacts with 2 box colliders, one for true and one for false, both have Is Trigger checked

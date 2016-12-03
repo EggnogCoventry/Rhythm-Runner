@@ -1,0 +1,55 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class promptFail : MonoBehaviour
+{
+    public Slider healthSlider;
+    public float playerHealth;
+    private Animator trapAnim;
+    GameObject rockDropper;
+
+    // Use this for initialization
+    void Start()
+    {
+        //healthSlider.value = 50;
+        playerHealth = 50f;
+        rockDropper = GameObject.FindGameObjectWithTag("rocks");
+        rockDropper.SetActive(false);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(playerHealth <= 0)
+        {
+            Application.LoadLevel("main");
+        }
+
+        if(healthSlider.name == "Slider")
+        {
+            healthSlider.value = playerHealth;
+        }
+
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        trapAnim = other.GetComponentInParent<Animator>();
+        if(trapAnim != null)
+        {
+            trapAnim.SetTrigger("spring");
+        }
+        if (other.tag != null)
+        {
+            playerHealth = playerHealth - 2;
+        }
+
+        if(other.gameObject.name == "13(Clone)")
+        {
+            rockDropper.SetActive(true);
+        }
+ 
+
+    }
+}
